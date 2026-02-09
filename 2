@@ -1,41 +1,68 @@
-# برنامه محاسبه حقوق ناخالص، مالیات و حقوق خالص
+def calc_tax(income_million: float) -> float:
+    """
+    محاسبه مالیات به صورت پلکانی طبق جدول (واحد: میلیون تومان)
+    پله‌ها:
+    تا 40: معاف
+    40-80: 10%
+    80-100: 15%
+    100-120: 20%
+    120-140: 25%
+    بیشتر از 140: 30%
+    """
+    brackets = [
+        (40, 0.00),
+        (80, 0.10),
+        (100, 0.15),
+        (120, 0.20),
+        (140, 0.25),
+        (float("inf"), 0.30),
+    ]
 
-base_salary = float(input("حقوق پایه (میلیون تومان) را وارد کنید: "))
-extra_hours = float(input("تعداد ساعات اضافه کاری را وارد کنید: "))
-hourly_rate = float(input("مبلغ هر ساعت اضافه کاری (میلیون تومان) را وارد کنید: "))
+    tax = 0.0
+    prev_limit = 0.0
 
-# محاسبه حقوق ناخالص
-gross_salary = base_salary + (extra_hours * hourly_rate)
+    for limit, rate in brackets:
+        if income_million <= prev_limit:
+            break
 
-# تعیین درصد مالیات
-if gross_salary <= 40:
-    tax_rate = 0
-elif gross_salary <= 80:
-    tax_rate = 0.10
-elif gross_salary <= 100:
-    tax_rate = 0.15
-elif gross_salary <= 120:
-    tax_rate = 0.20
-elif gross_salary <= 140:
-    tax_rate = 0.25
-else:
-    tax_rate = 0.30
+        taxable_part = min(income_million, limit) - prev_limit
+        tax += taxable_part * rate
+        prev_limit = limit
 
-# محاسبه مالیات
-tax_amount = gross_salary * tax_rate
+    return tax
 
-# محاسبه حقوق خالص
-net_salary = gross_salary - tax_amount
 
-# نمایش نتایج
-print("\n----------------------------")
-print(f"حقوق ناخالص شما: {gross_salary:.2f} میلیون تومان")
+def main():
+    # ورودی‌ها (واحد مبلغ: میلیون تومان)
+    gross = float(input("حقوق ناخالص ماهانه (میلیون تومان) را وارد کنید: ").strip())
+    overtime_hours = float(input("تعداد ساعات اضافه‌کار را وارد کنید: ").strip())
 
-if tax_rate == 0:
-    print("شما معاف از مالیات هستید.")
-else:
-    print(f"درصد مالیات شما: {tax_rate*100:.0f}%")
+    # محاسبه اضافه‌کار
+    overtime_pay = overtime_hours * (gross / 150.0)
 
-print(f"مبلغ مالیات: {tax_amount:.2f} میلیون تومان")
-print(f"حقوق خالص دریافتی: {net_salary:.2f} میلیون تومان")
-print("----------------------------")
+    # درآمد مشمول مالیات (حقوق + اضافه‌کار)
+    total_income = gross + overtime_pay
+
+    # بیمه (فقط روی حقوق ناخالص)
+    insurance = 0.07 * gross
+
+    # مالیات پلکانی (روی کل درآمد)
+    tax = calc_tax(total_income)
+
+    # کسورات و خالص دریافتی
+    deductions = tax + insurance
+    net_pay = total_income - deductions
+
+    # نمایش نتایج
+    print("\n========== نتیجه محاسبات ==========")
+    print(f"مبلغ اضافه‌کار: {overtime_pay:.2f} میلیون تومان")
+    print(f"کل دریافتی قبل از کسورات (حقوق + اضافه‌کار): {total_income:.2f} میلیون تومان")
+    print(f"مالیات: {tax:.2f} میلیون تومان")
+    print(f"بیمه (۷٪ حقوق ناخالص): {insurance:.2f} میلیون تومان")
+    print(f"مجموع کسورات (مالیات + بیمه): {deductions:.2f} میلیون تومان")
+    print(f"خالص دریافتی: {net_pay:.2f} میلیون تومان")
+    print("===================================")
+
+
+if __name__ == "__main__":
+    main()
