@@ -1,0 +1,41 @@
+# برنامه محاسبه حقوق ناخالص، مالیات و حقوق خالص
+
+base_salary = float(input("حقوق پایه (میلیون تومان) را وارد کنید: "))
+extra_hours = float(input("تعداد ساعات اضافه کاری را وارد کنید: "))
+hourly_rate = float(input("مبلغ هر ساعت اضافه کاری (میلیون تومان) را وارد کنید: "))
+
+# محاسبه حقوق ناخالص
+gross_salary = base_salary + (extra_hours * hourly_rate)
+
+# تعیین درصد مالیات
+if gross_salary <= 40:
+    tax_rate = 0
+elif gross_salary <= 80:
+    tax_rate = 0.10
+elif gross_salary <= 100:
+    tax_rate = 0.15
+elif gross_salary <= 120:
+    tax_rate = 0.20
+elif gross_salary <= 140:
+    tax_rate = 0.25
+else:
+    tax_rate = 0.30
+
+# محاسبه مالیات
+tax_amount = gross_salary * tax_rate
+
+# محاسبه حقوق خالص
+net_salary = gross_salary - tax_amount
+
+# نمایش نتایج
+print("\n----------------------------")
+print(f"حقوق ناخالص شما: {gross_salary:.2f} میلیون تومان")
+
+if tax_rate == 0:
+    print("شما معاف از مالیات هستید.")
+else:
+    print(f"درصد مالیات شما: {tax_rate*100:.0f}%")
+
+print(f"مبلغ مالیات: {tax_amount:.2f} میلیون تومان")
+print(f"حقوق خالص دریافتی: {net_salary:.2f} میلیون تومان")
+print("----------------------------")
