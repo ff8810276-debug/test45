@@ -1,0 +1,78 @@
+import cmath
+
+def main():
+    a = float(input("a را وارد کنید: ").strip())
+    b = float(input("b را وارد کنید: ").strip())
+    c = float(input("c را وارد کنید: ").strip())
+
+    print("\n========== حل معادله ==========")
+    print(f"معادله: {a}x^2 + {b}x + {c} = 0")
+
+    # حالت خاص: اگر a صفر باشد، معادله درجه 2 نیست
+    if a == 0:
+        print("\nاین معادله درجه دو نیست.")
+        if b == 0:
+            if c == 0:
+                print("بی‌نهایت جواب دارد (0=0).")
+            else:
+                print("هیچ جوابی ندارد (تناقض).")
+        else:
+            x = -c / b
+            print(f"معادله خطی است. ریشه: x = {x}")
+            print(f"مجموع ریشه‌ها: {x}")
+            print(f"حاصل‌ضرب ریشه‌ها: {x} (برای خطی تعریف استانداردی ندارد، این صرفاً همان ریشه است)")
+        return
+
+    # دلتا
+    delta = b*b - 4*a*c
+    print(f"\nدلتا (Δ) = {delta}")
+
+    # ریشه‌ها (با پشتیبانی از مختلط)
+    sqrt_delta = cmath.sqrt(delta)
+    x1 = (-b + sqrt_delta) / (2*a)
+    x2 = (-b - sqrt_delta) / (2*a)
+
+    # نمایش ریشه‌ها
+    print("\nریشه‌ها:")
+    # اگر قسمت موهومی تقریباً صفر باشد، به صورت حقیقی چاپ کنیم
+    def pretty(z):
+        if abs(z.imag) < 1e-12:
+            return f"{z.real:.6f}"
+        return f"{z.real:.6f} {'+' if z.imag >= 0 else '-'} {abs(z.imag):.6f}i"
+
+    print(f"x1 = {pretty(x1)}")
+    print(f"x2 = {pretty(x2)}")
+
+    # مجموع و حاصل ضرب ریشه‌ها (هم از فرمول و هم از محاسبه)
+    sum_roots_formula = -b / a
+    prod_roots_formula = c / a
+
+    sum_roots_calc = x1 + x2
+    prod_roots_calc = x1 * x2
+
+    print("\nمجموع و حاصل‌ضرب ریشه‌ها:")
+    print(f"مجموع ریشه‌ها (فرمول -b/a): {sum_roots_formula:.6f}")
+    print(f"حاصل‌ضرب ریشه‌ها (فرمول c/a): {prod_roots_formula:.6f}")
+
+    # اگر ریشه‌ها مختلط باشند، نمایش مقدار محاسبه‌شده هم مفید است
+    if abs(sum_roots_calc.imag) >= 1e-12 or abs(prod_roots_calc.imag) >= 1e-12:
+        print(f"مجموع ریشه‌ها (محاسبه): {pretty(sum_roots_calc)}")
+        print(f"حاصل‌ضرب ریشه‌ها (محاسبه): {pretty(prod_roots_calc)}")
+
+    # بررسی عبور از محورهای مختصات برای y = ax^2 + bx + c
+    print("\n========== بررسی عبور از محورها ==========")
+    # عبور از محور y: همیشه در x=0 مقدار y=c است
+    print(f"عبور از محور y: نقطه (0 , {c})")
+
+    # عبور از محور x: یعنی y=0 => همین معادله؛ اگر ریشه حقیقی داشته باشد نمودار محور x را قطع می‌کند
+    if delta > 0:
+        print("عبور از محور x: بله (دو نقطه تقاطع دارد).")
+    elif delta == 0:
+        print("عبور از محور x: بله (یک نقطه مماس/ریشه تکراری دارد).")
+    else:
+        print("عبور از محور x: خیر (هیچ تقاطع حقیقی با محور x ندارد).")
+
+    print("=========================================")
+
+if __name__ == "__main__":
+    main()
