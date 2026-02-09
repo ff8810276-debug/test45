@@ -1,0 +1,51 @@
+# برنامه محاسبه BMI و تعیین وضعیت بدنی + محاسبه وزن مناسب
+
+age = int(input("سن خود را وارد کنید: "))
+height = float(input("قد خود را بر حسب متر وارد کنید (مثال: 1.75): "))
+weight = float(input("وزن خود را بر حسب کیلوگرم وارد کنید: "))
+
+# محاسبه BMI
+bmi = weight / (height ** 2)
+
+print("\n---------------------------")
+print(f"سن: {age}")
+print(f"قد: {height} متر")
+print(f"وزن: {weight} کیلوگرم")
+print(f"BMI شما برابر است با: {bmi:.2f}")
+print("---------------------------\n")
+
+# تعیین وضعیت بر اساس جدول
+if bmi < 18.5:
+    status = "کمبود وزن (لاغری شدید)"
+elif 18.5 <= bmi < 25:
+    status = "نرمال"
+elif 25 <= bmi < 30:
+    status = "اضافه وزن"
+elif 30 <= bmi < 35:
+    status = "چاقی درجه یک"
+elif 35 <= bmi < 40:
+    status = "چاقی درجه دو"
+elif 40 <= bmi < 50:
+    status = "چاقی شدید (مفرط)"
+else:
+    status = "چاقی بسیار شدید"
+
+print("وضعیت بدنی شما:", status)
+
+# محاسبه وزن مناسب برای BMI نرمال
+min_normal_weight = 18.5 * (height ** 2)
+max_normal_weight = 25 * (height ** 2)
+
+print("\nوزن مناسب برای BMI نرمال باید بین این بازه باشد:")
+print(f"حداقل وزن نرمال: {min_normal_weight:.2f} کیلوگرم")
+print(f"حداکثر وزن نرمال: {max_normal_weight:.2f} کیلوگرم")
+
+# محاسبه میزان کاهش یا افزایش وزن
+if weight < min_normal_weight:
+    needed = min_normal_weight - weight
+    print(f"\nشما کمبود وزن دارید و باید حداقل {needed:.2f} کیلوگرم وزن اضافه کنید تا به نرمال برسید.")
+elif weight > max_normal_weight:
+    needed = weight - max_normal_weight
+    print(f"\nشما اضافه وزن دارید و باید حداقل {needed:.2f} کیلوگرم وزن کم کنید تا به نرمال برسید.")
+else:
+    print("\nوزن شما در محدوده نرمال است و نیازی به تغییر وزن ندارید.")
