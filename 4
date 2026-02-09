@@ -1,0 +1,30 @@
+def main():
+    # قیمت‌ها (دلار)
+    pw, px, py, pz = 80, 50, 25, 10
+
+    # محدودیت‌ها
+    total_items = 150
+    budget = 2000
+
+    solutions = []
+
+    # w و x و y را می‌چرخانیم، z از روی تعداد کل حساب می‌شود
+    for w in range(total_items + 1):
+        for x in range(total_items - w + 1):
+            for y in range(total_items - w - x + 1):
+                z = total_items - w - x - y
+                cost = pw*w + px*x + py*y + pz*z
+                if cost == budget:
+                    solutions.append((w, x, y, z))
+
+    print(f"تعداد حالت‌های ممکن: {len(solutions)}\n")
+
+    if solutions:
+        print("حالت‌ها به صورت (w, x, y, z):")
+        for i, (w, x, y, z) in enumerate(solutions, start=1):
+            print(f"{i:2d}) w={w:3d}, x={x:3d}, y={y:3d}, z={z:3d}")
+    else:
+        print("هیچ حالتی وجود ندارد.")
+
+if __name__ == "__main__":
+    main()
