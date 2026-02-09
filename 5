@@ -1,0 +1,95 @@
+def calc_rt_series(resistors):
+    return sum(resistors)
+
+def calc_rt_parallel(resistors):
+    # اگر مقاومتی صفر باشد، Rt در موازی صفر می‌شود (اتصال کوتاه)
+    if any(r == 0 for r in resistors):
+        return 0.0
+
+    inv_sum = 0.0
+    for r in resistors:
+        inv_sum += 1.0 / r
+
+    # اگر inv_sum صفر شود یعنی همه بی‌نهایت بوده‌اند (اینجا عملاً رخ نمی‌دهد چون ورودی عددی است)
+    if inv_sum == 0:
+        return float("inf")
+
+    return 1.0 / inv_sum
+
+def read_float(prompt):
+    while True:
+        try:
+            return float(input(prompt).strip())
+        except ValueError:
+            print("ورودی نامعتبر است. یک عدد وارد کنید.")
+
+def read_int(prompt):
+    while True:
+        try:
+            x = int(input(prompt).strip())
+            return x
+        except ValueError:
+            print("ورودی نامعتبر است. یک عدد صحیح وارد کنید.")
+
+def main():
+    print("=== محاسبه جریان مدار با مولد و مقاومت‌ها ===")
+
+    E = read_float("E (نیروی محرکه/ولت) را وارد کنید: ")
+    r_internal = read_float("r (مقاومت درونی مولد/اهم) را وارد کنید: ")
+
+    n = read_int("تعداد مقاومت‌ها را وارد کنید: ")
+    while n <= 0:
+        print("تعداد مقاومت‌ها باید حداقل 1 باشد.")
+        n = read_int("تعداد مقاومت‌ها را وارد کنید: ")
+
+    resistors = []
+    for i in range(1, n + 1):
+        Ri = read_float(f"مقدار R{i} (اهم) را وارد کنید: ")
+        while Ri < 0:
+            print("مقاومت منفی معنی ندارد. دوباره وارد کنید.")
+            Ri = read_float(f"مقدار R{i} (اهم) را وارد کنید: ")
+        resistors.append(Ri)
+
+    mode = input("اتصال مقاومت‌ها سری است یا موازی؟ (s/p): ").strip().lower()
+    while mode not in ("s", "p"):
+        mode = input("فقط 's' برای سری یا 'p' برای موازی وارد کنید: ").strip().lower()
+
+    # محاسبه Rt
+    if mode == "s":
+        Rt = calc_rt_series(resistors)
+        mode_name = "سری"
+    else:
+        Rt = calc_rt_parallel(resistors)
+        mode_name = "موازی"
+
+    # مقاومت کل مدار = r + Rt
+    R_total = r_internal + Rt
+
+    # محاسبه جریان
+    if R_total == 0:
+        I = float("inf")  # حالت ایده‌آل (اتصال کوتاه کامل)
+    else:
+        I = E / R_total
+
+    # نمایش
+    print("\n========== نتایج ==========")
+    print(f"نوع اتصال: {mode_name}")
+    print(f"Rt (مقاومت معادل مقاومت‌ها) = {Rt:.6f} اهم" if Rt != float("inf") else "Rt = بی‌نهایت")
+    print(f"r (مقاومت درونی مولد) = {r_internal:.6f} اهم")
+    print(f"R_total = r + Rt = {R_total:.6f} اهم" if R_total != float("inf") else "R_total = بی‌نهایت")
+
+    if I == float("inf"):
+        print("I (شدت جریان) = بی‌نهایت (اتصال کوتاه/مقاومت کل صفر)")
+    else:
+        print(f"I (شدت جریان) = {I:.6f} آمپر")
+
+    # (اختیاری) نمایش ولتاژ دو سر بار (مقاومت‌های خارجی)
+    # V_load = I * Rt
+    if I != float("inf") and Rt != float("inf"):
+        V_load = I * Rt
+        print(f"ولتاژ دو سر مقاومت‌های خارجی (V_load = I * Rt) = {V_load:.6f} ولت")
+
+    print("===========================")
+
+if __name__ == "__main__":
+    main()
